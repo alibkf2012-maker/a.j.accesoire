@@ -1,0 +1,118 @@
+Help me build a stunning, fully responsive single-page accessories e-commerce website for A&J.accesoire, a Casablanca-based accessories brand. The site should feature immersive 3D animations and smooth scroll interactions inspired by high-end product showcase websites (think floating product cards, parallax depth effects, and cinematic transitions). The entire experience should feel premium and modern — adapted to showcase physical accessories like watches, glasses, wallets, and bracelets.
+
+## What I Need Built
+
+A complete front-end website with a WhatsApp-based checkout flow, deployed on AWS. Here's what it should include:
+
+### Visual Style & Animations
+- Hero/intro section with a bold brand introduction, animated logo reveal, and a 3D-style product teaser
+- Smooth scroll-triggered animations throughout (products floating in, parallax layers, depth effects)
+- Use Three.js or GSAP (or both) to create the 3D animation feel — adapt the concept to work beautifully with real product photos rather than 3D models
+- Product cards with hover effects (tilt, glow, depth shift)
+- Everything must work equally well on mobile and desktop
+
+### Product Catalog
+Pull the product list, names, prices, and images from my existing site: https://ajaccesoire.netlify.app/
+
+Organize products into 4 categories:
+- Watches
+- Glasses
+- Wallets
+- Bracelets
+
+Under 20 products total. For each product, the price should be split in half from what's shown on the old site (e.g., if the old site shows 300 DH, display it as 150 DH). If a product image is missing or low quality, flag it for me to fix rather than using a placeholder.
+
+### Product Pop-Up
+- Full-screen pop-up when a product is clicked
+- Multiple photos per product (carousel or gallery)
+- Product name, price, and description
+- "Add to Cart" button
+- No variants — each product is one fixed item
+
+### Shopping Cart
+- Persistent cart sidebar or overlay
+- Shows product names, prices, quantities, and subtotal
+- Delivery options:
+  - Casablanca or Rabat: 20 DH flat
+  - All other Moroccan cities: 40 DH flat
+- Customer selects their delivery zone from a simple dropdown (not free-text)
+- Display total including delivery
+
+### Checkout Flow
+- Before WhatsApp opens, show a pop-up form collecting: customer name, phone number, and delivery address
+- On confirmation, open WhatsApp with a pre-filled message in this format (in the customer's selected language):
+
+```
+Bonjour A&J.accesoire 👋
+Je voudrais commander:
+- [Product Name] x[Qty] — [Price] DH
+- [Product Name] x[Qty] — [Price] DH
+Livraison: [City Zone] — [20 or 40] DH
+Total: [XXX] DH
+Nom: [Customer Name]
+Téléphone: [Phone]
+Adresse: [Address]
+```
+
+The WhatsApp number should be easy to configure in one place in the code.
+
+### Bilingual Support (French & English)
+- Language switcher in the navigation (FR / EN)
+- All UI text, product descriptions, cart labels, checkout form, and WhatsApp message adapt to the selected language
+- Default to French (primary market is Morocco)
+
+---
+
+## AWS Infrastructure
+
+Deploy this as a static site on AWS using the following setup:
+
+- **S3** private bucket for hosting the static files
+- **CloudFront** distribution as the CDN with Origin Access Control (OAC) — no public S3 access
+- **Route 53** (optional, if I have a custom domain later — set it up to be easy to add)
+- **Terraform** for all infrastructure as code
+- Use a **VPC endpoint** for S3 access — avoid NAT Gateway costs
+- Set up **AWS Budgets** with a billing alert at $10/month since this is a small personal store
+
+Before generating any Terraform or deploying anything:
+1. Walk me through installing the AWS CLI if I don't have it
+2. Run `aws configure` to set up my credentials
+3. Verify my AWS environment is working with `aws sts get-caller-identity`
+4. Then proceed with Terraform setup and deployment
+
+After deploying, verify the CloudFront URL loads the site correctly and walk me through how to update the site when I add new products.
+
+---
+
+## Constraints & Notes
+
+- Keep the architecture simple and cost-effective — this is a small boutique store, not a high-traffic platform
+- No backend server needed — everything is static front-end + WhatsApp
+- No payment gateway — payment is handled on delivery via WhatsApp conversation
+- Delivery is Morocco-only
+- The site must feel premium despite being a static site — the animations and UX are the differentiator
+- Check that all AWS services used (CloudFront, S3, Route 53) are available in the region I choose — use the AWS Knowledge MCP to verify before deploying
+
+---
+
+## Recommended MCP Servers to Enable
+
+Enable the following MCP servers in your AI coding assistant for this project:
+
+1. **awslabs.aws-knowledge-mcp-server** *(always on)* — Use this to verify regional availability of CloudFront, S3, and any other services before deploying, and to look up best practices for static site hosting on AWS.
+
+2. **awslabs.aws-api-mcp-server** *(always on)* — Use this to inspect your live AWS environment, verify that deployed S3 buckets and CloudFront distributions match the expected configuration, and confirm resources are created correctly after Terraform runs.
+
+3. **awslabs.aws-pricing-mcp-server** *(always on)* — Use this to estimate the monthly cost of the CloudFront + S3 setup before deploying, and to confirm the architecture fits within a ~$10/month budget for a low-traffic store.
+
+4. **awslabs.terraform-mcp-server** *(enable this one)* — Use this to write and review the Terraform infrastructure code for S3 + CloudFront, run Checkov security scans on the Terraform before applying, and ensure the IaC follows security best practices (private bucket, OAC, HTTPS-only).
+
+5. **awslabs.cloudwatch-mcp-server** *(always on)* — Use this to check CloudFront access logs and monitor for any errors after the site goes live.
+
+## SECURITY GUARDRAILS
+Generated code and configurations must never contain:
+- Hardcoded credentials, API keys, or secrets
+- Unauthenticated API calls or open endpoints
+- Disabled TLS / plaintext HTTP connections
+- Wildcard IAM policies or overly permissive S3 bucket policies
+- SQL string concatenation (must use parameterized queries)
